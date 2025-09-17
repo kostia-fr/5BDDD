@@ -25,10 +25,3 @@ def test_get_user():
     response = client.post("/user/100", json=user)
     assert response.status_code == 200
     assert response.json() == user
-    '''
-    assert response.json() == {
-        'email': 'Foo@gmail.com',
-        'id': 100,
-        'name': 'goudot-100'  
-    }
-    '''
