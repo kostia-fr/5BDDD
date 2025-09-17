@@ -1,0 +1,54 @@
+from typing import Union
+
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+import schema
+
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env
+
+# Instancie FastAPI
+app = FastAPI()
+# Traitement des fichiers statiques (HTML, CSS, JS, images...)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+# Traitement des templates (Jinja2)
+templates = Jinja2Templates(directory="templates")
+
+
+@app.get("/")
+def read_root():
+    """
+    Traitement du GET /
+    :return: redirection vers /static/index.html
+    """
+    return RedirectResponse("/static/index.html")  # {"Hello": "World"}
+
+@app.get("/items/{item_id}")
+def read_item(request: Request, item_id: int, q: Union[str, None] = None):
+    """
+    Recherche d'un item, sous forme de template
+    :param request: Request lié à l'appel GET
+    :param item_id: l'ID de l'item
+    :param q: Un paramètre optionnel
+    :return: le template avec le contexte de l'item
+    """
+    return templates.TemplateResponse(
+        request=request,
+        name="item.html",
+        context={"item_id": item_id, "q": q}
+    )
+
+@app.post("/user/{user_id}", response_model=schema.User)
+def post_user(request: Request, user: schema.User):
+    """
+    Création de User
+    :param request: Request lié à l'appel GET
+    :param user: Un objet de type User
+    :return: le User en question
+    """
+    print('USER', user)
+    return user
