@@ -8,6 +8,6 @@ class Delivery(BaseModel):
     dimensions: Tuple[int, int]
 
 class User(BaseModel):
-    id: int
+    id: PositiveInt
     name: str = 'John Doe'
     email: EmailStr
